@@ -1,0 +1,296 @@
+/* Color Palette */
+:root {
+    --light-coffee: #e8dccb; /* Main background color */
+    --darker-coffee: #d3c4b1; /* Box/Highlight color */
+    --text-color: #4a3e35;
+    --heart-seal: #d05353;
+}
+
+/* General Body and Typography */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--light-coffee);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    line-height: 1.6;
+}
+
+h2 {
+    color: var(--text-color);
+    margin-top: 2em;
+}
+
+/* --- Envelope Section Styling --- */
+.envelope-container {
+    padding: 50px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.envelope {
+    position: relative;
+    width: 250px;
+    height: 150px;
+    background-color: var(--darker-coffee);
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.8s ease-in-out;
+}
+
+/* Envelope Flap */
+.flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--darker-coffee);
+    transform-origin: top;
+    transition: transform 0.8s ease-in-out;
+    z-index: 2;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    pointer-events: none; /* Allows click through to the body/seal */
+}
+
+/* Envelope Body/Letter */
+.body {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+    overflow: hidden;
+    background-color: #fffaf0; /* Slightly lighter inside for the letter */
+    border-radius: 5px;
+}
+
+.letter-content {
+    opacity: 0;
+    transition: opacity 0.5s 0.8s; /* Delay fade in */
+    text-align: left;
+    white-space: pre-wrap; /* Preserve formatting for multi-line text */
+    font-size: 0.9em;
+}
+
+.center-text {
+    text-align: center;
+    margin: 10px 0;
+}
+
+.right-text {
+    text-align: right;
+    margin-top: 20px;
+}
+
+/* Heart Seal */
+.seal {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    background-color: var(--heart-seal);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1.2em;
+    z-index: 3;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.3s;
+}
+
+.click-text {
+    margin-top: 20px;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: opacity 0.3s;
+}
+
+/* OPENED STATE */
+.envelope.open .flap {
+    transform: rotateX(180deg);
+}
+
+.envelope.open .seal {
+    opacity: 0;
+}
+
+.envelope.open .letter-content {
+    opacity: 1;
+}
+
+.envelope-container.opened .click-text {
+    opacity: 0;
+}
+
+/* --- Game Section Styling --- */
+.game-section {
+    padding: 50px 20px;
+    text-align: center;
+    background-color: var(--light-coffee);
+}
+
+.game-box {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: var(--darker-coffee);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.game-title {
+    color: var(--text-color);
+    margin-bottom: 20px;
+}
+
+.game-button {
+    background-color: var(--heart-seal);
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+.game-button:hover {
+    background-color: #b94040;
+}
+
+.game-button:active {
+    transform: scale(0.98);
+}
+
+.game-play-area {
+    margin-top: 20px;
+}
+
+.collect-items {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.collect-btn {
+    padding: 10px 15px;
+    border: 2px solid var(--text-color);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    background-color: #fff;
+    font-weight: bold;
+}
+
+.collect-btn.heart:hover { background-color: #ffdddd; }
+.collect-btn.bonus:hover { background-color: #e0f7fa; }
+
+.basket-img p {
+    font-size: 3em;
+    margin: 10px 0 0;
+}
+
+/* Game Complete Popup */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.popup-content {
+    background-color: #fffaf0;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 400px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.popup-content button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: var(--heart-seal);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
+
+/* --- Gallery Section Styling --- */
+.gallery-section {
+    padding: 50px 20px;
+    background-color: var(--light-coffee);
+}
+
+.gallery-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.gallery-item {
+    background-color: var(--darker-coffee);
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    text-align: center;
+    flex: 1 1 300px; /* Allows flexible sizing */
+}
+
+.gallery-text {
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    display: block;
+    object-fit: cover;
+    max-height: 400px; /* Optional: to make images consistent */
+}
+
+.gallery-caption {
+    margin-top: 10px;
+    font-style: italic;
+    color: var(--heart-seal);
+    font-weight: bold;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .gallery-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+    .collect-items {
+        flex-direction: column;
+    }
+}
