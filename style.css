@@ -1,15 +1,15 @@
 /* Color Palette */
 :root {
-    --light-coffee: #e8dccb; /* Main background color */
-    --darker-coffee: #d3c4b1; /* Box/Highlight color */
-    --text-color: #4a3e35;
+    --bg-color: #988558; /* New Background Color */
+    --highlight-color: #6F4E37; /* New Highlight/Box Color */
+    --text-color: #3d2c1d; /* Dark brown for contrast */
     --heart-seal: #d05353;
 }
 
 /* General Body and Typography */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: var(--light-coffee);
+    background-color: var(--bg-color);
     color: var(--text-color);
     margin: 0;
     padding: 0;
@@ -35,26 +35,29 @@ h2 {
 
 .envelope {
     position: relative;
-    width: 250px;
-    height: 150px;
-    background-color: var(--darker-coffee);
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px; /* Slightly wider */
+    height: 180px; /* Slightly taller */
+    background-color: var(--highlight-color);
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     transition: transform 0.8s ease-in-out;
 }
 
-/* Envelope Flap */
+/* Envelope Flap - V-shape at the top */
 .flap {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    background-color: var(--darker-coffee);
+    height: 50%; /* Only covers the top half initially */
+    background-color: var(--highlight-color);
     transform-origin: top;
     transition: transform 0.8s ease-in-out;
     z-index: 2;
-    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    /* Defines the V-shape closing the envelope */
+    clip-path: polygon(0% 0%, 100% 0%, 50% 100%); 
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
     pointer-events: none;
 }
 
@@ -68,16 +71,25 @@ h2 {
     padding: 15px;
     box-sizing: border-box;
     overflow: hidden;
-    background-color: #fffaf0;
-    border-radius: 5px;
+    background-color: #fffaf0; /* Letter paper color */
+    border-radius: 15px;
+}
+
+/* Letter Content Wrapper for Scrolling */
+.letter-content-wrapper {
+    height: 100%;
+    max-height: 100%;
+    overflow-y: hidden; /* Hidden when closed */
+    padding-right: 15px; /* Space for potential scrollbar */
 }
 
 .letter-content {
     opacity: 0;
     transition: opacity 0.5s 0.8s;
     text-align: left;
-    white-space: pre-wrap; /* CRITICAL for letter formatting */
+    white-space: pre-wrap;
     font-size: 0.9em;
+    min-height: 120%; /* Ensure content is long enough to scroll */
 }
 
 .center-text {
@@ -90,22 +102,23 @@ h2 {
     margin-top: 20px;
 }
 
-/* Heart Seal */
+/* Heart Seal - Centered and on the flap */
 .seal {
     position: absolute;
-    top: -10px;
-    right: 10px;
-    width: 30px;
-    height: 30px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
     background-color: var(--heart-seal);
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
-    font-size: 1.2em;
+    font-size: 1.5em;
     z-index: 3;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     transition: opacity 0.3s;
 }
 
@@ -129,6 +142,10 @@ h2 {
     opacity: 1;
 }
 
+.envelope.open .letter-content-wrapper {
+    overflow-y: auto; /* Enable scroll when open */
+}
+
 .envelope-container.opened .click-text {
     opacity: 0;
 }
@@ -137,13 +154,13 @@ h2 {
 .game-section {
     padding: 50px 20px;
     text-align: center;
-    background-color: var(--light-coffee);
+    background-color: var(--bg-color);
 }
 
 .game-box {
     max-width: 600px;
     margin: 0 auto;
-    background-color: var(--darker-coffee);
+    background-color: var(--highlight-color); /* Highlight color */
     padding: 30px;
     border-radius: 15px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
@@ -164,17 +181,23 @@ h2 {
     background-color: #b94040;
 }
 
-/* --- Dynamic Game Animation CSS --- */
+.control-text {
+    font-size: 0.9em;
+    font-style: italic;
+    margin-top: 10px;
+}
 
+/* --- Dynamic Game Animation CSS --- */
 .falling-area {
     position: relative;
     width: 90%;
-    height: 300px; /* The height of the "sky" */
+    height: 350px; 
     margin: 20px auto 0;
     overflow: hidden;
-    border: 2px dashed var(--text-color);
+    border: 3px dashed var(--text-color);
     border-radius: 10px;
     background-color: #fcf8f3; 
+    cursor: none; /* Hide default cursor to use the basket as the cursor */
 }
 
 /* Base style for falling items */
@@ -183,12 +206,8 @@ h2 {
     top: 0;
     left: 50%;
     font-size: 1.5em;
-    cursor: pointer;
-    transition: transform 0.1s;
     user-select: none;
     z-index: 5;
-
-    /* Apply the falling animation (duration set by JS) */
     animation-name: fall;
     animation-timing-function: linear;
 }
@@ -203,18 +222,22 @@ h2 {
         opacity: 1;
     }
     100% {
-        transform: translateY(300px) scale(0.8);
+        transform: translateY(350px) scale(0.8); /* Falls down the 350px area */
         opacity: 0;
     }
 }
 
+/* Basket styling for movement */
 .basket-img {
     position: absolute;
-    bottom: 5px;
+    bottom: 0px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%); /* Start centered */
     z-index: 6;
     font-size: 4em !important;
+    pointer-events: none; /* Ensures mousemove targets the fallingArea */
+    transition: left 0.05s linear; /* Smooth horizontal movement */
+    user-select: none;
 }
 
 /* Game Complete Popup */
@@ -256,7 +279,7 @@ h2 {
 /* --- Gallery Section Styling --- */
 .gallery-section {
     padding: 50px 20px;
-    background-color: var(--light-coffee);
+    background-color: var(--bg-color);
 }
 
 .gallery-grid {
@@ -268,7 +291,7 @@ h2 {
 }
 
 .gallery-item {
-    background-color: var(--darker-coffee);
+    background-color: var(--highlight-color); /* Highlight color */
     padding: 15px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
