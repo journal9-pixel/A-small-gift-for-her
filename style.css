@@ -55,7 +55,7 @@ h2 {
     transition: transform 0.8s ease-in-out;
     z-index: 2;
     clip-path: polygon(0 0, 100% 0, 50% 100%);
-    pointer-events: none; /* Allows click through to the body/seal */
+    pointer-events: none;
 }
 
 /* Envelope Body/Letter */
@@ -68,15 +68,15 @@ h2 {
     padding: 15px;
     box-sizing: border-box;
     overflow: hidden;
-    background-color: #fffaf0; /* Slightly lighter inside for the letter */
+    background-color: #fffaf0;
     border-radius: 5px;
 }
 
 .letter-content {
     opacity: 0;
-    transition: opacity 0.5s 0.8s; /* Delay fade in */
+    transition: opacity 0.5s 0.8s;
     text-align: left;
-    white-space: pre-wrap; /* Preserve formatting for multi-line text */
+    white-space: pre-wrap; /* CRITICAL for letter formatting */
     font-size: 0.9em;
 }
 
@@ -149,11 +149,6 @@ h2 {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
-.game-title {
-    color: var(--text-color);
-    margin-bottom: 20px;
-}
-
 .game-button {
     background-color: var(--heart-seal);
     color: white;
@@ -169,37 +164,57 @@ h2 {
     background-color: #b94040;
 }
 
-.game-button:active {
-    transform: scale(0.98);
+/* --- Dynamic Game Animation CSS --- */
+
+.falling-area {
+    position: relative;
+    width: 90%;
+    height: 300px; /* The height of the "sky" */
+    margin: 20px auto 0;
+    overflow: hidden;
+    border: 2px dashed var(--text-color);
+    border-radius: 10px;
+    background-color: #fcf8f3; 
 }
 
-.game-play-area {
-    margin-top: 20px;
-}
-
-.collect-items {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin: 20px 0;
-}
-
-.collect-btn {
-    padding: 10px 15px;
-    border: 2px solid var(--text-color);
-    border-radius: 5px;
+/* Base style for falling items */
+.falling-item {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    font-size: 1.5em;
     cursor: pointer;
-    transition: background-color 0.2s;
-    background-color: #fff;
-    font-weight: bold;
+    transition: transform 0.1s;
+    user-select: none;
+    z-index: 5;
+
+    /* Apply the falling animation (duration set by JS) */
+    animation-name: fall;
+    animation-timing-function: linear;
 }
 
-.collect-btn.heart:hover { background-color: #ffdddd; }
-.collect-btn.bonus:hover { background-color: #e0f7fa; }
+/* Keyframe animation for the falling effect */
+@keyframes fall {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(300px) scale(0.8);
+        opacity: 0;
+    }
+}
 
-.basket-img p {
-    font-size: 3em;
-    margin: 10px 0 0;
+.basket-img {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 6;
+    font-size: 4em !important;
 }
 
 /* Game Complete Popup */
@@ -259,7 +274,7 @@ h2 {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 300px;
     text-align: center;
-    flex: 1 1 300px; /* Allows flexible sizing */
+    flex: 1 1 300px;
 }
 
 .gallery-text {
@@ -274,7 +289,7 @@ h2 {
     border-radius: 10px;
     display: block;
     object-fit: cover;
-    max-height: 400px; /* Optional: to make images consistent */
+    max-height: 400px;
 }
 
 .gallery-caption {
@@ -289,8 +304,5 @@ h2 {
     .gallery-grid {
         flex-direction: column;
         align-items: center;
-    }
-    .collect-items {
-        flex-direction: column;
     }
 }
