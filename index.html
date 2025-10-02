@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Madam Ji 💗</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <div class="envelope-container" id="envelope-container">
+        <div class="envelope" id="envelope">
+            <div class="flap"></div>
+            <div class="body">
+                <div class="letter-content" id="letter-content">
+                    <p>To my MADAM JI,</p>
+                    <p class="center-text">I'm yours babyy. I belong to you. My heart, my existence belongs to you. I am madly in love with you. You are my world. I LOVE YOU SOO MUCH 💗🥰</p>
+                    <p class="right-text">from,<br>Your paglu.</p>
+                </div>
+            </div>
+            <div class="seal" id="seal">❤️</div>
+        </div>
+        <p class="click-text">Click on me to Open</p>
+    </div>
+
+    <section class="game-section" id="game-section">
+        <div class="game-box">
+            <h2 class="game-title">The Heart Collector</h2>
+            <button class="game-button" id="startGameButton">Click on me to play a game</button>
+            
+            <div id="gamePlayArea" class="game-play-area hidden">
+                <h3>Collect 20 hearts</h3>
+                <p>Hearts Collected: <span id="heartCount">0</span>/20</p>
+                
+                <div class="collect-items">
+                    <button class="collect-btn heart" data-value="1">Click for a Heart ❤️</button>
+                    <button class="collect-btn bonus" data-value="3">Click for a Bonus Batman 🦇 (x3)</button>
+                    <button class="collect-btn bonus" data-value="4">Click for a Bonus Batman 🦇 (x4)</button>
+                    <button class="collect-btn bonus" data-value="5">Click for a Bonus Batman 🦇 (x5)</button>
+                </div>
+
+                <div class="basket-img">
+                    <p>🧺</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="gameCompletePopup" class="popup hidden">
+        <div class="popup-content">
+            <p>Similarly like you collected the hearts in the basket in this game, my heart is all your, it just belongs to you in the real life.</p>
+            <button onclick="document.getElementById('gameCompletePopup').classList.add('hidden')">Close</button>
+        </div>
+    </div>
+
+
+    <section class="gallery-section">
+        <h2>A Gallery For You</h2>
+        <div class="gallery-grid">
+
+            <div class="gallery-item">
+                <p class="gallery-text">Flowers for you my Cutie</p>
+                <img src="https://i.pinimg.com/564x/e7/80/f6/e780f684803d2111d4e13d98d28ed531.jpg" alt="Flowers for you" loading="lazy">
+            </div>
+            
+            <div class="gallery-item">
+                <p class="gallery-text">See your love made the a Walking Green Forest and converted to a Pookie</p>
+                <img src="https://i.pinimg.com/564x/cc/d9/3e/ccd93e3d8199589d813735e5d3419b63.jpg" alt="Walking Green Forest" loading="lazy">
+            </div>
+
+            <div class="gallery-item">
+                <p class="gallery-text">I miss you soo much babyy, I need you</p>
+                <img src="https://i.pinimg.com/564x/41/5e/5c/415e5c7ce1a556e99499424c0840c571.jpg" alt="I miss you" loading="lazy">
+                <p class="gallery-caption">I love you so much babyy 💗</p>
+            </div>
+
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
