@@ -4,17 +4,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const envelope = document.getElementById('envelope');
     
     envelopeContainer.addEventListener('click', () => {
-        // Only open if it's not already open
         if (!envelope.classList.contains('open')) {
             envelope.classList.add('open');
             envelopeContainer.classList.add('opened');
         }
     });
 
-    // --- Dynamic Falling Game Logic ---
+    // --- Dynamic Falling Game Logic (Basket Movement & Collection) ---
     const startGameButton = document.getElementById('startGameButton');
     const gamePlayArea = document.getElementById('gamePlayArea');
     const fallingArea = document.getElementById('fallingArea');
+    const basket = document.getElementById('basket');
     const heartCountSpan = document.getElementById('heartCount');
     const gameCompletePopup = document.getElementById('gameCompletePopup');
 
@@ -31,10 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
         { symbol: '🦇', value: 5, type: 'bonus-5', duration: 5000 },
     ];
 
+    const BASKET_CATCH_AREA = 40; // Pixels distance from basket center to catch item
+
+    // --- Core Game Functions ---
     function updateScore(value) {
         heartCount += value;
         
-        // Ensure the count stops visually at 20
         if (heartCount > goal) {
             heartCount = goal;
         }
@@ -49,24 +51,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function endGame() {
         clearInterval(gameInterval);
         isGameActive = false;
-        heartCountSpan.textContent = goal; // Final display 20/20
+        heartCountSpan.textContent = goal;
         
-        // Remove any remaining falling items
         document.querySelectorAll('.falling-item').forEach(item => item.remove());
         
-        // Show the final message
+        // Remove event listeners for basket movement
+        fallingArea.removeEventListener('mousemove', moveBasket);
+        fallingArea.removeEventListener('touchmove', moveBasketTouch);
+        
         gameCompletePopup.classList.remove('hidden');
     }
 
     function createFallingItem() {
-        // Randomly select an item: Hearts (index 0) are more common (70% chance)
         const isHeart = Math.random() < 0.7;
         let itemData;
 
         if (isHeart) {
             itemData = ITEMS[0]; 
         } else {
-            // Randomly choose a bonus Batman (indices 1, 2, or 3)
             const bonusIndex = Math.floor(Math.random() * (ITEMS.length - 1)) + 1;
             itemData = ITEMS[bonusIndex];
         }
@@ -76,36 +78,89 @@ document.addEventListener('DOMContentLoaded', () => {
         item.classList.add('falling-item');
         item.dataset.value = itemData.value;
         
-        // Set random horizontal position
-        const leftPos = Math.random() * 85 + 5; // 5% to 90% of the falling area width
-        item.style.left = `${leftPos}%`;
+        const leftPos = Math.random() * (fallingArea.clientWidth - 30) + 15; // Set left position in pixels
+        item.style.left = `${leftPos}px`;
         
-        // Set animation duration
-        const duration = itemData.duration / 1000 + (Math.random() * 0.5); // Adds a small random speed variance
+        const duration = itemData.duration / 1000 + (Math.random() * 0.5); 
         item.style.animationDuration = `${duration}s`;
 
-        // Event listener for collecting the item
-        item.addEventListener('click', function() {
-            if (isGameActive && heartCount < goal) {
-                updateScore(itemData.value);
-                this.remove(); // Remove item on collection
+        // Check for catch condition every animation frame
+        let checkInterval = setInterval(() => {
+            if (!isGameActive || heartCount >= goal) {
+                clearInterval(checkInterval);
+                return;
             }
-        });
 
-        // Remove item when animation ends (it hits the bottom without being collected)
-        item.addEventListener('animationend', function() {
-            this.remove();
-        });
+            const itemRect = item.getBoundingClientRect();
+            const basketRect = basket.getBoundingClientRect();
+
+            // Calculate item's center point
+            const itemCenter = itemRect.left + itemRect.width / 2;
+            
+            // Check if item has reached the basket height
+            const isAtBasketLevel = itemRect.bottom >= basketRect.top;
+
+            // Check if item is horizontally aligned with the basket
+            const isHorizontallyAligned = itemCenter >= basketRect.left && itemCenter <= basketRect.right;
+
+            if (isAtBasketLevel && isHorizontallyAligned) {
+                updateScore(itemData.value);
+                item.remove();
+                clearInterval(checkInterval);
+            }
+
+            // Remove item and clear interval if it falls past the bottom
+            if (itemRect.top > fallingArea.clientHeight) {
+                item.remove();
+                clearInterval(checkInterval);
+            }
+
+        }, 50); // Check 20 times per second
 
         fallingArea.appendChild(item);
     }
+    
+    // --- Basket Movement Handlers ---
+    function moveBasket(e) {
+        if (!isGameActive) return;
+
+        // Calculate mouse X position relative to the fallingArea
+        const fallingAreaRect = fallingArea.getBoundingClientRect();
+        let mouseX = e.clientX - fallingAreaRect.left;
+
+        // Calculate the maximum basket movement range
+        const basketWidth = basket.clientWidth;
+        const maxLeft = fallingAreaRect.width - basketWidth / 2;
+        const minLeft = basketWidth / 2;
+
+        // Constrain the basket position to stay within the area
+        let newX = Math.min(Math.max(mouseX, minLeft), maxLeft);
+        
+        // Set the basket's position relative to its center point
+        basket.style.left = `${newX}px`;
+    }
+    
+    function moveBasketTouch(e) {
+        if (e.touches && e.touches.length > 0) {
+            // Prevent scrolling on mobile when moving basket
+            e.preventDefault(); 
+            moveBasket({ clientX: e.touches[0].clientX });
+        }
+    }
+
 
     function startGame() {
+        if (isGameActive) return;
+        
         isGameActive = true;
         gamePlayArea.classList.remove('hidden');
         startGameButton.classList.add('hidden');
         
-        // Start generating items every 1 to 1.5 seconds
+        // Add event listeners for basket movement
+        fallingArea.addEventListener('mousemove', moveBasket);
+        fallingArea.addEventListener('touchmove', moveBasketTouch);
+        
+        // Start generating items
         gameInterval = setInterval(createFallingItem, 1000 + Math.random() * 500);
     }
 
